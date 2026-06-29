@@ -1,0 +1,24 @@
+{
+  "name": "frontline-arcana",
+  "version": "0.1.0",
+  "private": true,
+  "type": "module",
+  "description": "Frontline Arcana, a two-player World War II card game inspired by Magic-style supply, units, blockers, and tactics.",
+  "engines": {
+    "node": ">=18.17"
+  },
+  "scripts": {
+    "start": "node server.js",
+    "dev": "node --watch server.js",
+    "assets": "node scripts/generate-assets.mjs",
+    "smoke": "node scripts/smoke-sockets.mjs",
+    "test": "node --test"
+  },
+  "dependencies": {
+    "express": "^4.19.2",
+    "socket.io": "^4.7.5"
+  },
+  "devDependencies": {
+    "socket.io-client": "^4.8.3"
+  }
+}

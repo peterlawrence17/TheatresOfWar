@@ -1,0 +1,22 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="480" height="320" viewBox="0 0 480 320" role="img" aria-label="Card art placeholder">
+  <defs>
+    <linearGradient id="bg" x1="0" x2="1" y1="0" y2="1">
+      <stop offset="0" stop-color="#2a3433"/>
+      <stop offset="0.45" stop-color="#6c6048"/>
+      <stop offset="1" stop-color="#1b2528"/>
+    </linearGradient>
+    <radialGradient id="lamp" cx="35%" cy="20%" r="70%">
+      <stop offset="0" stop-color="#dbc17b" stop-opacity="0.85"/>
+      <stop offset="0.45" stop-color="#dbc17b" stop-opacity="0.2"/>
+      <stop offset="1" stop-color="#dbc17b" stop-opacity="0"/>
+    </radialGradient>
+  </defs>
+  <rect width="480" height="320" rx="18" fill="url(#bg)"/>
+  <rect width="480" height="320" rx="18" fill="url(#lamp)"/>
+  <path d="M48 210 C120 152 174 248 242 188 S360 170 432 118" fill="none" stroke="#c9bb8e" stroke-width="8" stroke-opacity="0.35"/>
+  <path d="M58 76 H422 M82 112 H398 M96 148 H382 M72 184 H408 M116 220 H364" stroke="#ece1b8" stroke-width="2" stroke-opacity="0.22"/>
+  <path d="M108 246 L138 222 L170 250 L212 214 L270 244 L330 202 L386 238" fill="none" stroke="#101617" stroke-width="10" stroke-opacity="0.45"/>
+  <circle cx="126" cy="110" r="26" fill="none" stroke="#d7c28a" stroke-width="5" stroke-opacity="0.58"/>
+  <path d="M126 76 V144 M92 110 H160 M108 92 L144 128 M144 92 L108 128" stroke="#d7c28a" stroke-width="4" stroke-opacity="0.58"/>
+  <text x="240" y="284" text-anchor="middle" font-family="Arial, sans-serif" font-size="24" font-weight="700" fill="#efe2b5" opacity="0.9">CARD ART PLACEHOLDER</text>
+</svg>
