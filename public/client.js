@@ -61,7 +61,7 @@ const PHASE_GLOSSARY_TERMS = [
   },
   {
     term: "Main Phase",
-    definition: "Play one Supply Line, deploy units, establish operations, and use tactics. You can move to combat when ready."
+    definition: "Play one Supply Line, deploy units, establish operations, and use tactics. Leaving main phase ends the turn automatically if no legal attacks are available."
   },
   {
     term: "Declare Attackers",
@@ -69,15 +69,11 @@ const PHASE_GLOSSARY_TERMS = [
   },
   {
     term: "Declare Blockers",
-    definition: "The defender assigns ready units to block attackers. Airborne and Infiltrate can restrict which blockers are legal."
+    definition: "The defender assigns ready units to block attackers. If no legal blocks are available, combat resolves automatically."
   },
   {
     term: "Resolve Combat",
-    definition: "Blocked units exchange damage, Ambush strikes first, Breakthrough can hit HQ, and unblocked attackers damage HQ."
-  },
-  {
-    term: "Second Main",
-    definition: "The active player gets one more chance to play cards before ending the turn."
+    definition: "Blocked units exchange damage, Ambush strikes first, Breakthrough can hit HQ, unblocked attackers damage HQ, and the turn ends."
   },
   {
     term: "End Turn",
@@ -398,16 +394,16 @@ function renderPlayerZone(player, role) {
         </div>
       </div>
       <div class="zone-body">
-        <div>
+        <div class="row-section operation-section">
           <div class="row-label"><span>Operations</span><span>${player.operations.length}</span></div>
           ${renderOperationRow(player.operations, player.index)}
         </div>
-        <div>
+        <div class="row-section battlefield-section">
           <div class="row-label"><span>Battlefield</span><span>${player.battlefield.length}</span></div>
           ${renderCardRow(player.battlefield, "battlefield", player.index)}
         </div>
         ${isMe ? `
-          <div>
+          <div class="row-section hand-section">
             <div class="row-label"><span>Hand</span><span>${player.hand.length}</span></div>
             ${renderCardRow(player.hand, "hand", player.index)}
           </div>
@@ -420,7 +416,7 @@ function renderPlayerZone(player, role) {
 function renderCombatBar() {
   return `
     <section class="combat-bar">
-      <div class="combat-panel">
+      <div class="combat-panel combat-state">
         <h2>${escapeHtml(getCombatHeadline())}</h2>
         <p>${escapeHtml(getCombatDetail())}</p>
       </div>
@@ -428,10 +424,10 @@ function renderCombatBar() {
         ${pendingCard ? `
           <button data-action="cancelTarget">Cancel Target</button>
         ` : `
-          <button data-action="nextPhase" ${canAdvancePhase() ? "" : "disabled"}>${escapeHtml(getNextPhaseLabel())}</button>
+          <button class="primary-phase-button" data-action="nextPhase" ${canAdvancePhase() ? "" : "disabled"}>${escapeHtml(getNextPhaseLabel())}</button>
         `}
       </div>
-      <div class="combat-panel">
+      <div class="combat-panel combat-log-panel">
         ${pendingCard ? `<div class="pending-banner">Targeting ${escapeHtml(pendingCard.name)}</div>` : renderLog()}
       </div>
     </section>
@@ -820,6 +816,9 @@ function getNextPhaseLabel() {
   if (!state || state.status !== "playing") {
     return "Waiting";
   }
+  if (phaseActionEndsTurn()) {
+    return "End Turn";
+  }
   if (state.phase === "main1") {
     return "To Combat";
   }
@@ -833,6 +832,25 @@ function getNextPhaseLabel() {
     return "End Turn";
   }
   return "Waiting";
+}
+
+function phaseActionEndsTurn() {
+  if (!state || state.status !== "playing") {
+    return false;
+  }
+  if (state.phase === "main2") {
+    return state.viewerIndex === state.activePlayer;
+  }
+  if (state.phase === "main1") {
+    return state.viewerIndex === state.activePlayer && !hasLegalAttackersClient();
+  }
+  if (state.phase === "declareAttackers") {
+    return state.viewerIndex === state.activePlayer && !hasDeclaredAttackers() && !hasLegalAttackersClient();
+  }
+  if (state.phase === "declareBlockers") {
+    return state.viewerIndex === state.defenderIndex && !hasLegalBlocksClient();
+  }
+  return false;
 }
 
 function getPhaseTitle() {
@@ -891,6 +909,9 @@ function getCombatDetail() {
   if (state.phase === "declareBlockers") {
     return "Choose one ready blocker, then click an attacking unit.";
   }
+  if (state.phase === "main1" && state.viewerIndex === state.activePlayer && !hasLegalAttackersClient()) {
+    return "No legal attacks are available. The phase button will end your turn.";
+  }
   return "Play one Supply Line each turn, deploy units, establish operations, and play tactics.";
 }
 
@@ -914,6 +935,53 @@ function isAttackableHQ(ownerIndex) {
     state.viewerIndex === state.activePlayer &&
     ownerIndex === getOpponentIndex(state.viewerIndex)
   );
+}
+
+function hasLegalAttackersClient() {
+  return Boolean(getMe()?.battlefield.some((unit) => {
+    const keywords = unit.effectiveKeywords || unit.keywords || [];
+    return (
+      Number(unit.effectiveAttack ?? unit.attack ?? 0) > 0 &&
+      !unit.exhausted &&
+      !keywords.includes("Garrison") &&
+      (!unit.summoningSick || keywords.includes("Blitz"))
+    );
+  }));
+}
+
+function hasLegalBlocksClient() {
+  if (!state?.combat?.attackers?.length || state.viewerIndex !== state.defenderIndex) {
+    return false;
+  }
+  const me = getMe();
+  const usedBlockers = new Set(state.combat.attackers.map((attack) => attack.blockerId).filter(Boolean));
+  return state.combat.attackers.some((attack) => {
+    if (attack.blockerId) {
+      return false;
+    }
+    const attacker = findUnitById(attack.attackerId);
+    if (!attacker) {
+      return false;
+    }
+    return me?.battlefield.some((blocker) => (
+      !blocker.exhausted &&
+      !usedBlockers.has(blocker.iid) &&
+      canBlockClient(attacker, blocker)
+    ));
+  });
+}
+
+function canBlockClient(attacker, blocker) {
+  const attackerKeywords = attacker.effectiveKeywords || attacker.keywords || [];
+  const blockerKeywords = blocker.effectiveKeywords || blocker.keywords || [];
+  const blockerAttack = Number(blocker.effectiveAttack ?? blocker.attack ?? 0);
+  if (attackerKeywords.includes("Airborne") && !blockerKeywords.includes("Airborne") && !blockerKeywords.includes("AA")) {
+    return false;
+  }
+  if (attackerKeywords.includes("Infiltrate") && blockerAttack >= 4) {
+    return false;
+  }
+  return true;
 }
 
 function getMe() {

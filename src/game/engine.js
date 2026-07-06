@@ -198,7 +198,7 @@ export function advancePhase(game, playerIndex) {
     }
     resolveCombat(game);
     if (game.status === "playing") {
-      game.phase = "main2";
+      endTurn(game);
     }
     return;
   }

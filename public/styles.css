@@ -9,8 +9,10 @@
   --blue: #315d80;
   --green: #547057;
   --shadow: rgba(0, 0, 0, 0.45);
-  --card-w: clamp(138px, 13vw, 184px);
-  --card-h: calc(var(--card-w) * 1.42);
+  --card-w: 108px;
+  --enemy-card-w: 100px;
+  --field-card-w: 108px;
+  --hand-card-w: 146px;
   font-family: Inter, ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
   color: var(--ink);
   background: #0d1112;
@@ -23,12 +25,13 @@
 html,
 body {
   width: 100%;
-  min-height: 100%;
+  height: 100%;
   margin: 0;
+  overflow: hidden;
 }
 
 body {
-  min-height: 100vh;
+  height: 100vh;
   background:
     linear-gradient(180deg, rgba(7, 9, 10, 0.42), rgba(7, 9, 10, 0.78)),
     url("/assets/battlefield-bg.png") center / cover fixed;
@@ -79,21 +82,29 @@ select:focus {
 }
 
 .app-shell {
-  min-height: 100vh;
+  height: 100vh;
+  min-height: 0;
   display: grid;
-  grid-template-rows: auto 1fr;
-  background: rgba(7, 9, 10, 0.28);
+  grid-template-rows: 64px minmax(0, 1fr);
+  overflow: hidden;
+  background:
+    radial-gradient(circle at 50% 48%, rgba(213, 183, 111, 0.18), transparent 30%),
+    linear-gradient(180deg, rgba(4, 6, 7, 0.16), rgba(4, 6, 7, 0.66));
 }
 
 .topbar {
   display: grid;
-  grid-template-columns: minmax(220px, 1fr) auto minmax(220px, 1fr);
-  gap: 14px;
+  grid-template-columns: minmax(300px, 1fr) 320px minmax(300px, 1fr);
+  gap: 12px;
   align-items: center;
-  padding: 12px 16px;
+  min-height: 0;
+  padding: 8px 18px;
   border-bottom: 1px solid var(--line);
-  background: rgba(7, 10, 11, 0.78);
-  backdrop-filter: blur(8px);
+  background:
+    linear-gradient(180deg, rgba(10, 14, 15, 0.92), rgba(5, 8, 9, 0.84)),
+    rgba(7, 10, 11, 0.78);
+  box-shadow: 0 12px 32px rgba(0, 0, 0, 0.42);
+  backdrop-filter: blur(10px);
 }
 
 .brand {
@@ -104,8 +115,8 @@ select:focus {
 }
 
 .brand-mark {
-  width: 38px;
-  height: 38px;
+  width: 42px;
+  height: 42px;
   display: grid;
   place-items: center;
   border: 1px solid rgba(234, 212, 150, 0.32);
@@ -117,7 +128,7 @@ select:focus {
 
 .brand h1 {
   margin: 0;
-  font-size: clamp(1rem, 2vw, 1.45rem);
+  font-size: 1.32rem;
   letter-spacing: 0;
 }
 
@@ -131,11 +142,14 @@ select:focus {
   display: grid;
   gap: 2px;
   justify-items: center;
-  min-width: 240px;
+  min-width: 0;
   padding: 8px 14px;
-  border: 1px solid var(--line);
-  border-radius: 6px;
-  background: rgba(11, 16, 17, 0.82);
+  border: 1px solid rgba(236, 218, 160, 0.32);
+  border-radius: 8px;
+  background:
+    radial-gradient(circle at 50% 0%, rgba(213, 183, 111, 0.24), transparent 58%),
+    rgba(11, 16, 17, 0.88);
+  box-shadow: inset 0 0 24px rgba(213, 183, 111, 0.08), 0 12px 30px rgba(0, 0, 0, 0.32);
 }
 
 .phase-chip strong {
@@ -146,10 +160,12 @@ select:focus {
   display: flex;
   justify-content: flex-end;
   gap: 8px;
-  flex-wrap: wrap;
+  flex-wrap: nowrap;
+  min-width: 0;
 }
 
 .top-actions button {
+  min-height: 34px;
   padding: 0 12px;
 }
 
@@ -160,20 +176,39 @@ select:focus {
 
 .board {
   display: grid;
-  grid-template-rows: minmax(178px, auto) auto minmax(260px, 1fr);
-  gap: 10px;
-  width: min(1840px, 100%);
+  grid-template-rows: minmax(250px, 0.76fr) 108px minmax(440px, 1.14fr);
+  gap: 8px;
+  min-height: 0;
+  height: 100%;
+  width: min(1900px, 100%);
   margin: 0 auto;
-  padding: 12px 16px 16px;
+  padding: 10px 18px 14px;
+  overflow: hidden;
+  background:
+    radial-gradient(ellipse at 50% 50%, rgba(34, 28, 19, 0.44), transparent 38%),
+    radial-gradient(ellipse at 50% 52%, rgba(213, 183, 111, 0.13), transparent 46%);
 }
 
 .zone {
   min-width: 0;
+  min-height: 0;
+  display: grid;
+  grid-template-rows: auto minmax(0, 1fr);
   border: 1px solid var(--line);
   border-radius: 8px;
-  background: var(--panel);
+  background:
+    linear-gradient(180deg, rgba(18, 24, 24, 0.86), rgba(7, 10, 10, 0.86)),
+    var(--panel);
   box-shadow: 0 20px 60px var(--shadow);
   overflow: hidden;
+}
+
+.enemy-zone {
+  border-color: rgba(166, 66, 53, 0.3);
+}
+
+.friendly-zone {
+  border-color: rgba(213, 183, 111, 0.3);
 }
 
 .zone-header {
@@ -181,9 +216,11 @@ select:focus {
   grid-template-columns: minmax(180px, 1fr) auto;
   gap: 10px;
   align-items: center;
-  padding: 10px 12px;
+  min-height: 52px;
+  padding: 8px 12px;
   border-bottom: 1px solid var(--line);
-  background: rgba(6, 8, 9, 0.44);
+  background:
+    linear-gradient(180deg, rgba(26, 32, 31, 0.66), rgba(6, 8, 9, 0.5));
 }
 
 .player-meta {
@@ -195,20 +232,21 @@ select:focus {
   overflow: hidden;
   text-overflow: ellipsis;
   white-space: nowrap;
-  font-size: 1rem;
+  font-size: 0.96rem;
 }
 
 .player-stats {
   display: flex;
-  flex-wrap: wrap;
+  flex-wrap: nowrap;
   justify-content: flex-end;
-  gap: 7px;
+  gap: 6px;
+  min-width: 0;
 }
 
 .stat,
 .hq {
-  min-width: 70px;
-  padding: 6px 8px;
+  min-width: 66px;
+  padding: 5px 8px;
   border: 1px solid rgba(236, 218, 160, 0.18);
   border-radius: 6px;
   color: var(--muted);
@@ -224,7 +262,7 @@ select:focus {
 .hq strong {
   display: block;
   color: var(--ink);
-  font-size: 1rem;
+  font-size: 0.96rem;
 }
 
 .hq {
@@ -234,8 +272,26 @@ select:focus {
 
 .zone-body {
   display: grid;
-  gap: 10px;
-  padding: 10px;
+  gap: 7px;
+  min-height: 0;
+  padding: 8px 10px 10px;
+  overflow: hidden;
+}
+
+.enemy-zone .zone-body {
+  grid-template-rows: 76px minmax(0, 1fr);
+}
+
+.friendly-zone .zone-body {
+  grid-template-rows: 76px minmax(0, 1fr) 226px;
+}
+
+.row-section {
+  min-width: 0;
+  min-height: 0;
+  display: grid;
+  grid-template-rows: auto minmax(0, 1fr);
+  overflow: hidden;
 }
 
 .row-label {
@@ -243,25 +299,30 @@ select:focus {
   justify-content: space-between;
   gap: 8px;
   color: var(--muted);
-  font-size: 0.76rem;
+  font-size: 0.72rem;
   text-transform: uppercase;
 }
 
 .card-row {
   display: flex;
-  gap: 10px;
-  min-height: calc(var(--card-h) * 0.58);
+  align-items: center;
+  gap: 8px;
+  min-width: 0;
+  min-height: 0;
+  height: 100%;
   overflow-x: auto;
-  padding-bottom: 4px;
+  overflow-y: hidden;
+  padding: 0 2px 4px;
   scrollbar-color: rgba(218, 190, 114, 0.5) rgba(0, 0, 0, 0.24);
 }
 
 .hand-row {
-  min-height: calc(var(--card-h) + 10px);
+  align-items: end;
 }
 
 .empty-row {
-  min-height: 82px;
+  min-height: 0;
+  height: 100%;
   display: grid;
   place-items: center;
   border: 1px dashed rgba(230, 216, 180, 0.16);
@@ -272,22 +333,28 @@ select:focus {
 
 .combat-bar {
   display: grid;
-  grid-template-columns: minmax(220px, 1fr) minmax(240px, auto) minmax(220px, 1fr);
-  gap: 10px;
+  grid-template-columns: minmax(0, 1fr) 230px minmax(0, 1fr);
+  gap: 12px;
   align-items: stretch;
+  min-height: 0;
+  padding: 0 34px;
 }
 
 .combat-panel {
-  min-height: 92px;
+  min-height: 0;
   padding: 10px 12px;
-  border: 1px solid var(--line);
+  border: 1px solid rgba(236, 218, 160, 0.26);
   border-radius: 8px;
-  background: var(--panel-strong);
+  background:
+    radial-gradient(circle at 50% 0%, rgba(213, 183, 111, 0.14), transparent 62%),
+    var(--panel-strong);
+  box-shadow: 0 18px 44px rgba(0, 0, 0, 0.38);
+  overflow: hidden;
 }
 
 .combat-panel h2 {
   margin: 0 0 4px;
-  font-size: 0.95rem;
+  font-size: 1rem;
 }
 
 .combat-panel p {
@@ -301,11 +368,118 @@ select:focus {
   align-items: center;
   justify-content: center;
   gap: 8px;
+  background:
+    radial-gradient(circle, rgba(213, 183, 111, 0.28), rgba(64, 46, 22, 0.78) 58%, rgba(10, 13, 14, 0.92) 100%);
 }
 
 .combat-actions button {
-  min-width: 150px;
+  min-width: 176px;
   padding: 0 14px;
+}
+
+.primary-phase-button {
+  min-height: 72px;
+  border-color: rgba(255, 226, 145, 0.66);
+  color: #15120b;
+  background:
+    linear-gradient(180deg, #f0d281, #b38336 54%, #6a451e);
+  box-shadow: inset 0 2px 0 rgba(255, 255, 255, 0.24), 0 16px 34px rgba(0, 0, 0, 0.46);
+  font-weight: 900;
+  text-transform: uppercase;
+}
+
+.primary-phase-button:disabled {
+  color: rgba(243, 234, 209, 0.48);
+  background: linear-gradient(180deg, rgba(66, 66, 58, 0.82), rgba(28, 31, 29, 0.9));
+}
+
+.finished-board {
+  grid-template-rows: 1fr;
+  align-items: start;
+}
+
+.match-summary {
+  display: grid;
+  gap: 14px;
+  width: min(980px, 100%);
+  margin: 18px auto;
+}
+
+.match-summary-header {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) auto;
+  gap: 12px;
+  align-items: center;
+  padding: 16px;
+  border: 1px solid var(--line);
+  border-radius: 8px;
+  background: var(--panel-strong);
+  box-shadow: 0 20px 60px var(--shadow);
+}
+
+.match-summary-header h2,
+.match-player-card h3,
+.match-log-panel h3 {
+  margin: 0;
+}
+
+.match-summary-header p,
+.match-player-card p {
+  margin: 4px 0 0;
+  color: var(--muted);
+}
+
+.match-stats-grid {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 12px;
+}
+
+.match-player-card,
+.match-log-panel {
+  padding: 14px;
+  border: 1px solid var(--line);
+  border-radius: 8px;
+  background: var(--panel);
+}
+
+.match-outcome {
+  display: inline-block;
+  margin-bottom: 6px;
+  color: var(--brass);
+  font-size: 0.74rem;
+  font-weight: 800;
+  text-transform: uppercase;
+}
+
+.match-stat-list {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 8px;
+  margin: 12px 0 0;
+}
+
+.match-stat-list div {
+  padding: 8px;
+  border: 1px solid rgba(236, 218, 160, 0.16);
+  border-radius: 6px;
+  background: rgba(7, 9, 10, 0.48);
+}
+
+.match-stat-list dt {
+  color: var(--muted);
+  font-size: 0.72rem;
+  text-transform: uppercase;
+}
+
+.match-stat-list dd {
+  margin: 2px 0 0;
+  color: var(--ink);
+  font-weight: 800;
+}
+
+.match-log-panel .log-list {
+  max-height: 220px;
 }
 
 .log-list {
@@ -321,10 +495,11 @@ select:focus {
 }
 
 .game-card {
+  --row-card-w: var(--field-card-w);
   position: relative;
-  flex: 0 0 var(--card-w);
-  width: var(--card-w);
-  height: var(--card-h);
+  flex: 0 0 var(--row-card-w);
+  width: var(--row-card-w);
+  height: calc(var(--row-card-w) * 1.42);
   display: grid;
   grid-template-rows: auto 35% 1fr auto;
   border: 1px solid rgba(235, 218, 166, 0.28);
@@ -335,6 +510,14 @@ select:focus {
   overflow: hidden;
   user-select: none;
   will-change: transform, opacity, filter;
+}
+
+.enemy-zone .battlefield-section .game-card {
+  --row-card-w: var(--enemy-card-w);
+}
+
+.hand-row .game-card {
+  --row-card-w: var(--hand-card-w);
 }
 
 .game-card.hand-card,
@@ -389,7 +572,7 @@ select:focus {
   overflow: hidden;
   text-overflow: ellipsis;
   white-space: nowrap;
-  font-size: clamp(0.72rem, 1vw, 0.88rem);
+  font-size: 0.76rem;
   font-weight: 800;
 }
 
@@ -430,7 +613,7 @@ select:focus {
   text-overflow: ellipsis;
   white-space: nowrap;
   color: var(--brass);
-  font-size: 0.72rem;
+  font-size: 0.68rem;
   text-transform: uppercase;
 }
 
@@ -440,14 +623,14 @@ select:focus {
   text-overflow: ellipsis;
   white-space: nowrap;
   color: #cfdfdf;
-  font-size: 0.7rem;
+  font-size: 0.66rem;
 }
 
 .rules-text {
   margin: 0;
   overflow: hidden;
   color: var(--muted);
-  font-size: clamp(0.64rem, 0.83vw, 0.77rem);
+  font-size: 0.68rem;
   line-height: 1.25;
 }
 
@@ -475,8 +658,8 @@ select:focus {
 }
 
 .operation-card {
-  flex-basis: min(220px, 48vw);
-  height: 86px;
+  --row-card-w: 204px;
+  height: 56px;
   grid-template-rows: auto 1fr;
 }
 
@@ -486,7 +669,11 @@ select:focus {
 }
 
 .operation-card .card-body {
-  padding-top: 7px;
+  padding: 5px 7px;
+}
+
+.operation-card .rules-text {
+  display: none;
 }
 
 .exhausted {
@@ -533,11 +720,12 @@ select:focus {
 }
 
 .lobby {
-  min-height: 100vh;
+  height: 100vh;
   display: grid;
   place-items: center;
   padding: 24px;
   background: rgba(3, 5, 6, 0.18);
+  overflow: auto;
 }
 
 .lobby-panel {
@@ -564,7 +752,7 @@ select:focus {
 
 .lobby-copy h1 {
   margin: 0 0 10px;
-  font-size: clamp(2rem, 6vw, 4.4rem);
+  font-size: 4rem;
   letter-spacing: 0;
   line-height: 0.95;
 }
@@ -644,7 +832,7 @@ select:focus {
   border-radius: 8px;
   color: var(--brass);
   background: rgba(7, 9, 10, 0.76);
-  font-size: clamp(2rem, 9vw, 4rem);
+  font-size: 3.4rem;
   font-weight: 900;
 }
 
@@ -985,6 +1173,9 @@ select:focus {
   .player-stats,
   .split-actions,
   .lobby-mini-actions,
+  .match-summary-header,
+  .match-stats-grid,
+  .match-stat-list,
   .glossary-header,
   .tutorial-header {
     grid-template-columns: 1fr;
