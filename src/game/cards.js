@@ -5,6 +5,7 @@ export const FACTIONS = [
     shortName: "UK",
     doctrine: "Radar, navy, commandos, resilient combined arms.",
     style: "Controls enemy tempo, blocks aircraft well, and wins with tough midrange units.",
+    art: "/assets/factions/uk.png",
     colors: ["#1f4e79", "#b7c6d8"]
   },
   {
@@ -22,6 +23,7 @@ export const FACTIONS = [
     shortName: "France",
     doctrine: "Fortifications, field guns, cavalry tanks, and resistance networks.",
     style: "Builds a hard defensive line, trades profitably, then counters with resistance units.",
+    art: "/assets/factions/france.png",
     colors: ["#254f8d", "#d7d9d6"]
   },
   {
@@ -30,6 +32,7 @@ export const FACTIONS = [
     shortName: "Italy",
     doctrine: "Mediterranean raids, mountain troops, cruisers, and risky tempo.",
     style: "Uses cheap mobile units and combat tricks to slip damage past larger armies.",
+    art: "/assets/factions/italy.png",
     colors: ["#2f6f4f", "#c9b879"]
   },
   {
@@ -38,6 +41,7 @@ export const FACTIONS = [
     shortName: "Russia",
     doctrine: "Deep battle, mass infantry, rockets, winter pressure, and Guards formations.",
     style: "Trades units freely, creates bodies, and turns the late game into a grinding front.",
+    art: "/assets/factions/russia.png",
     colors: ["#7c1d1d", "#d5c7a1"]
   },
   {
@@ -46,6 +50,7 @@ export const FACTIONS = [
     shortName: "Japan",
     doctrine: "Carrier air power, island garrisons, night torpedoes, and infiltration.",
     style: "Combines evasive threats with decisive air and naval strikes.",
+    art: "/assets/factions/japan.png",
     colors: ["#8f2f28", "#d8c49a"]
   },
   {
@@ -54,6 +59,7 @@ export const FACTIONS = [
     shortName: "USA",
     doctrine: "Industry, logistics, air superiority, amphibious landings, and heavy ships.",
     style: "Ramps supply and cards, then overwhelms the board with efficient combined arms.",
+    art: "/assets/factions/usa.png",
     colors: ["#244b7a", "#c8ad68"]
   },
   {

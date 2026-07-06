@@ -142,6 +142,11 @@ export function advancePhase(game, playerIndex) {
   assertPlaying(game);
   if (game.phase === "main1") {
     assertActive(game, playerIndex);
+    if (!hasLegalAttackers(game, playerIndex)) {
+      writeLog(game, `${game.players[playerIndex].name} has no legal attacks. The turn ends.`);
+      endTurn(game);
+      return;
+    }
     game.phase = "declareAttackers";
     game.combat = { attackers: [] };
     writeLog(game, `${game.players[playerIndex].name} moves to combat.`);
@@ -151,8 +156,8 @@ export function advancePhase(game, playerIndex) {
   if (game.phase === "declareAttackers") {
     assertActive(game, playerIndex);
     if (game.combat.attackers.length === 0) {
-      game.phase = "main2";
       writeLog(game, `${game.players[playerIndex].name} holds the line and declares no attacks.`);
+      endTurn(game);
       return;
     }
 
@@ -166,7 +171,18 @@ export function advancePhase(game, playerIndex) {
     cleanupDeadUnits(game);
     game.combat.attackers = game.combat.attackers.filter((attack) => findUnit(game, attack.attackerId));
     if (game.combat.attackers.length === 0 || game.status !== "playing") {
-      game.phase = "main2";
+      if (game.status === "playing") {
+        endTurn(game);
+      }
+      return;
+    }
+
+    if (!hasLegalBlockAssignments(game)) {
+      writeLog(game, `${game.players[getDefenderIndex(game)].name} has no legal blocks.`);
+      resolveCombat(game);
+      if (game.status === "playing") {
+        endTurn(game);
+      }
       return;
     }
 
@@ -218,19 +234,7 @@ export function toggleAttacker(game, playerIndex, unitIid) {
     return;
   }
 
-  const stats = getEffectiveStats(game, unit);
-  if (stats.attack <= 0) {
-    throw new Error("Units with 0 attack cannot attack.");
-  }
-  if (unit.exhausted) {
-    throw new Error("Exhausted units cannot attack.");
-  }
-  if (hasKeyword(game, unit, "Garrison")) {
-    throw new Error("Garrison units cannot attack.");
-  }
-  if (unit.summoningSick && !hasKeyword(game, unit, "Blitz")) {
-    throw new Error("This unit just deployed and needs Blitz to attack.");
-  }
+  assertCanAttack(game, unit);
 
   if (!hasKeyword(game, unit, "Entrenched")) {
     unit.exhausted = true;
@@ -276,6 +280,14 @@ export function assignBlocker(game, playerIndex, attackerIid, blockerIid) {
   blocker.unit.exhausted = true;
   attack.blockerId = blockerIid;
   writeLog(game, `${game.players[playerIndex].name} blocks ${attacker.unit.name} with ${blocker.unit.name}.`);
+
+  if (!hasLegalBlockAssignments(game)) {
+    writeLog(game, `${game.players[playerIndex].name} has no further legal blocks.`);
+    resolveCombat(game);
+    if (game.status === "playing") {
+      endTurn(game);
+    }
+  }
 }
 
 export function surrender(game, playerIndex) {
@@ -361,6 +373,61 @@ export function canBlock(game, attacker, blocker) {
     return false;
   }
   return true;
+}
+
+function assertCanAttack(game, unit) {
+  const stats = getEffectiveStats(game, unit);
+  if (stats.attack <= 0) {
+    throw new Error("Units with 0 attack cannot attack.");
+  }
+  if (unit.exhausted) {
+    throw new Error("Exhausted units cannot attack.");
+  }
+  if (hasKeyword(game, unit, "Garrison")) {
+    throw new Error("Garrison units cannot attack.");
+  }
+  if (unit.summoningSick && !hasKeyword(game, unit, "Blitz")) {
+    throw new Error("This unit just deployed and needs Blitz to attack.");
+  }
+}
+
+function canAttack(game, unit) {
+  try {
+    assertCanAttack(game, unit);
+    return true;
+  } catch {
+    return false;
+  }
+}
+
+function hasLegalAttackers(game, playerIndex) {
+  return game.players[playerIndex]?.battlefield?.some((unit) => canAttack(game, unit)) ?? false;
+}
+
+function hasLegalBlockAssignments(game) {
+  const defenderIndex = getDefenderIndex(game);
+  const defender = game.players[defenderIndex];
+  const usedBlockers = new Set(game.combat.attackers.map((attack) => attack.blockerId).filter(Boolean));
+
+  for (const attack of game.combat.attackers) {
+    if (attack.blockerId) {
+      continue;
+    }
+    const attacker = findUnit(game, attack.attackerId)?.unit;
+    if (!attacker) {
+      continue;
+    }
+    for (const blocker of defender?.battlefield ?? []) {
+      if (blocker.exhausted || usedBlockers.has(blocker.iid)) {
+        continue;
+      }
+      if (canBlock(game, attacker, blocker)) {
+        return true;
+      }
+    }
+  }
+
+  return false;
 }
 
 function buildDeck(game, factionId, ownerIndex, shouldShuffle) {

@@ -1,9 +1,9 @@
 {
-  "name": "frontline-arcana",
+  "name": "theatres-of-war",
   "version": "0.1.0",
   "private": true,
   "type": "module",
-  "description": "Frontline Arcana, a two-player World War II card game inspired by Magic-style supply, units, blockers, and tactics.",
+  "description": "Theatres of War, a two-player World War II card game inspired by Magic-style supply, units, blockers, and tactics.",
   "engines": {
     "node": ">=18.17"
   },

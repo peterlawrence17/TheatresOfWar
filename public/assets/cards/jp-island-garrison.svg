@@ -1,27 +1,65 @@
-<svg xmlns="http://www.w3.org/2000/svg" width="480" height="320" viewBox="0 0 480 320" role="img" aria-label="Island Garrison placeholder art">
+<svg xmlns="http://www.w3.org/2000/svg" width="480" height="320" viewBox="0 0 480 320" role="img" aria-label="Island Garrison card art">
   <defs>
     <linearGradient id="bg" x1="0" x2="1" y1="0" y2="1">
-      <stop offset="0" stop-color="#26312d"/>
-      <stop offset="0.52" stop-color="#6b694b"/>
-      <stop offset="1" stop-color="#111817"/>
+      <stop offset="0" stop-color="#5a221d"/>
+      <stop offset="0.52" stop-color="#83503e"/>
+      <stop offset="1" stop-color="#160d0b"/>
     </linearGradient>
-    <radialGradient id="lamp" cx="30%" cy="16%" r="70%">
-      <stop offset="0" stop-color="#ead48a" stop-opacity="0.62"/>
-      <stop offset="0.5" stop-color="#ead48a" stop-opacity="0.13"/>
-      <stop offset="1" stop-color="#ead48a" stop-opacity="0"/>
+    <radialGradient id="lamp" cx="65%" cy="33%" r="78%">
+      <stop offset="0" stop-color="#d8c49a" stop-opacity="0.68"/>
+      <stop offset="0.46" stop-color="#d8c49a" stop-opacity="0.16"/>
+      <stop offset="1" stop-color="#d8c49a" stop-opacity="0"/>
     </radialGradient>
+    <linearGradient id="ground" x1="0" x2="1" y1="0" y2="0">
+      <stop offset="0" stop-color="#070a0a" stop-opacity="0.82"/>
+      <stop offset="0.5" stop-color="#160d0b" stop-opacity="0.58"/>
+      <stop offset="1" stop-color="#070a0a" stop-opacity="0.88"/>
+    </linearGradient>
+    <filter id="grain">
+      <feTurbulence baseFrequency="0.72" numOctaves="2" seed="45" type="fractalNoise"/>
+      <feColorMatrix type="saturate" values="0"/>
+      <feComponentTransfer>
+        <feFuncA type="table" tableValues="0 0.18"/>
+      </feComponentTransfer>
+      <feBlend mode="overlay" in2="SourceGraphic"/>
+    </filter>
+    <clipPath id="round">
+      <rect width="480" height="320" rx="18"/>
+    </clipPath>
   </defs>
-  <rect width="480" height="320" rx="18" fill="url(#bg)"/>
-  <rect width="480" height="320" rx="18" fill="url(#lamp)"/>
-  <path d="M42 210 C116 146 168 248 238 188 S358 170 430 116" fill="none" stroke="#f0ddb0" stroke-width="7" stroke-opacity="0.26"/>
-  <path d="M58 74 H422 M82 110 H398 M96 146 H382 M72 182 H408 M116 218 H364" stroke="#f8e8bd" stroke-width="2" stroke-opacity="0.18"/>
-  <path d="M106 246 L138 220 L170 250 L212 214 L270 244 L330 202 L386 238" fill="none" stroke="#101617" stroke-width="10" stroke-opacity="0.42"/>
-  <circle cx="124" cy="108" r="27" fill="none" stroke="#e3c87e" stroke-width="5" stroke-opacity="0.55"/>
-  <path d="M124 74 V142 M90 108 H158 M106 90 L142 126 M142 90 L106 126" stroke="#e3c87e" stroke-width="4" stroke-opacity="0.55"/>
-  <rect x="256" y="78" width="142" height="72" rx="8" fill="#0b1112" fill-opacity="0.34" stroke="#ead48a" stroke-opacity="0.24"/>
-  <path d="M278 126 H374 M278 104 H350" stroke="#ead48a" stroke-width="5" stroke-linecap="round" stroke-opacity="0.4"/>
-  <text x="240" y="284" text-anchor="middle" font-family="Arial, sans-serif" font-size="22" font-weight="700" fill="#f3e3b4" opacity="0.92">Island Garrison</text>
-  <text x="34" y="42" font-family="Arial, sans-serif" font-size="20" font-weight="700" fill="#f3e3b4" opacity="0.92">UNIT</text>
-  <text x="446" y="42" text-anchor="end" font-family="Arial, sans-serif" font-size="20" font-weight="700" fill="#f3e3b4" opacity="0.92">1/5</text>
-  <text x="240" y="64" text-anchor="middle" font-family="Arial, sans-serif" font-size="16" font-weight="700" fill="#d7c28a" opacity="0.82">Infantry / Fortification</text>
+  <g clip-path="url(#round)">
+    <rect width="480" height="320" fill="url(#bg)"/>
+    <rect width="480" height="320" fill="url(#lamp)"/>
+    <path d="M0 217 C80 177 132 201 224 203 S370 173 480 167 V320 H0 Z" fill="#0d0908" opacity="0.34"/>
+    <path d="M0 238 C102 205 146 246 232 218 S380 194 480 172 V320 H0 Z" fill="url(#ground)"/>
+    <path d="M34 78 C54 134 48 202 26 284 M96 58 C120 140 108 214 72 306 M410 72 C382 150 386 224 430 302" stroke="#0d0908" stroke-width="18" stroke-linecap="round" opacity="0.42"/>
+    <path d="M24 86 L74 116 L44 134 M84 70 L134 104 L98 126 M404 84 L358 118 L396 134" fill="none" stroke="#d8c49a" stroke-width="7" stroke-linecap="round" stroke-opacity="0.18"/>
+    <path d="M52 78 H426 M86 112 H396 M72 146 H412 M104 180 H370 M128 214 H350" stroke="#d8c49a" stroke-width="2" stroke-opacity="0.12"/>
+    <g fill="#0d0908" stroke="#d8c49a" stroke-opacity="0.25" stroke-width="5" stroke-linecap="round" stroke-linejoin="round">
+    <circle cx="161" cy="132" r="18"/>
+    <path d="M137 128 H185" fill="none"/>
+    <path d="M161 150 L143 214 M161 150 L185 212" fill="none"/>
+    <path d="M153 176 L233 144" fill="none" stroke-width="8"/>
+    <circle cx="213" cy="116" r="18"/>
+    <path d="M189 112 H237" fill="none"/>
+    <path d="M213 134 L195 198 M213 134 L237 196" fill="none"/>
+    <path d="M205 160 L285 128" fill="none" stroke-width="8"/>
+    <circle cx="329.5" cy="142" r="18"/>
+    <path d="M305.5 138 H353.5" fill="none"/>
+    <path d="M329.5 160 L311.5 224 M329.5 160 L353.5 222" fill="none"/>
+    <path d="M321.5 186 L401.5 154" fill="none" stroke-width="8"/>
+    <path d="M104 238 C164 210 218 242 278 212 S374 200 430 226" fill="none" stroke="#d8c49a" stroke-width="5" stroke-opacity="0.16"/>
+  </g>
+    <circle cx="225" cy="165" r="5" fill="#d8c49a" opacity="0.1"/>
+    <circle cx="418" cy="84" r="2" fill="#d8c49a" opacity="0.14"/>
+    <circle cx="215" cy="179" r="3" fill="#d8c49a" opacity="0.18"/>
+    <circle cx="408" cy="98" r="4" fill="#d8c49a" opacity="0.22"/>
+    <circle cx="205" cy="193" r="5" fill="#d8c49a" opacity="0.1"/>
+    <circle cx="398" cy="112" r="2" fill="#d8c49a" opacity="0.14"/>
+    <circle cx="195" cy="207" r="3" fill="#d8c49a" opacity="0.18"/>
+    <circle cx="388" cy="126" r="4" fill="#d8c49a" opacity="0.22"/>
+    <circle cx="185" cy="45" r="5" fill="#d8c49a" opacity="0.1"/>
+    <rect width="480" height="320" fill="#000" opacity="0.08" filter="url(#grain)"/>
+    <path d="M22 292 C106 252 162 290 236 252 S368 240 458 206" fill="none" stroke="#d8c49a" stroke-width="7" stroke-linecap="round" stroke-opacity="0.12"/>
+  </g>
 </svg>

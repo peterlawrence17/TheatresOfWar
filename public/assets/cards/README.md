@@ -1,4 +1,4 @@
-# Card Art Placeholders
+# Card Art
 
 Each SVG in this folder maps to a card id from `src/game/cards.js`.
 

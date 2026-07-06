@@ -1,4 +1,4 @@
-# Frontline Arcana
+# Theatres of War
 
 A 2-player multiplayer WW2 card game with Magic-inspired turns, supply lines, exhausted units, blockers, tactics, operations, and faction-specific decks.
 
@@ -37,16 +37,16 @@ npm start
 - USA: logistics, industry, air superiority, heavy combined arms.
 - Australia: ANZAC patrols, jungle fighting, desert endurance.
 
-Card art currently uses one placeholder SVG per card id. Replace individual files in `public/assets/cards/` as custom art becomes available.
-Germany and Australia also have faction art in `public/assets/factions/`; other factions still use the neutral UI treatment until art is added.
+Card art uses one generated SVG per card id. Replace individual files in `public/assets/cards/` as custom art becomes available.
+Faction art uses one generated PNG per faction in `public/assets/factions/`.
 
 ## Replaceable Assets
 
-Card placeholders are packaged individually in `public/assets/cards/<card-id>.svg`.
+Card art is packaged individually in `public/assets/cards/<card-id>.svg`.
 Faction art is packaged individually in `public/assets/factions/<faction-id>.png`.
 Sound effects are packaged individually in `public/assets/sounds/`; committed attacks use `attack.mp3`.
 
-Regenerate placeholder assets after adding cards:
+Regenerate card art and UI sounds after adding cards:
 
 ```bash
 npm run assets

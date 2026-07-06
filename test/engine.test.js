@@ -73,3 +73,21 @@ test("AA units can block Airborne attackers", () => {
   assignBlocker(game, 1, stuka.iid, destroyer.iid);
   assert.equal(game.combat.attackers[0].blockerId, destroyer.iid);
 });
+
+test("unblocked attackers damage the enemy HQ", () => {
+  const game = startedGame();
+  const desertRats = createCardInstance(game, "uk-desert-rats", 0);
+  desertRats.summoningSick = false;
+  game.players[0].battlefield = [desertRats];
+  game.players[1].battlefield = [];
+  game.phase = "declareAttackers";
+  game.activePlayer = 0;
+  const startingHQ = game.players[1].hq;
+
+  toggleAttacker(game, 0, desertRats.iid);
+  advancePhase(game, 0);
+  advancePhase(game, 1);
+
+  assert.equal(game.players[1].hq, startingHQ - desertRats.attack);
+  assert.equal(game.phase, "main2");
+});

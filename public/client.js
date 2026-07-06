@@ -1,7 +1,8 @@
 const socket = io();
 const app = document.querySelector("#app");
 const noticeEl = document.querySelector("#notice");
-const GAME_TITLE = "Frontline Arcana";
+const GAME_TITLE = "Theatres of War";
+const STARTING_HQ = 25;
 const SOUND_FILES = {
   attack: "/assets/sounds/attack.mp3",
   draw: "/assets/sounds/draw.wav",
@@ -187,7 +188,11 @@ document.addEventListener("click", (event) => {
 
   const hqEl = event.target.closest("[data-hq-owner]");
   if (hqEl) {
-    handleTargetClick({ kind: "hq", ownerIndex: Number(hqEl.dataset.hqOwner) });
+    const ownerIndex = Number(hqEl.dataset.hqOwner);
+    if (handleHQCombatClick(ownerIndex)) {
+      return;
+    }
+    handleTargetClick({ kind: "hq", ownerIndex });
     return;
   }
 
@@ -288,11 +293,12 @@ function renderLobby() {
 function renderGame() {
   const me = getMe();
   const opponent = getOpponent();
+  const finished = state.status === "finished";
   app.innerHTML = `
     <div class="app-shell">
       <header class="topbar">
         <div class="brand">
-          <span class="brand-mark">FA</span>
+          <span class="brand-mark">TW</span>
           <div>
             <h1>${GAME_TITLE}</h1>
             <small>Room ${escapeHtml(state.roomCode)}</small>
@@ -307,17 +313,69 @@ function renderGame() {
           <button data-action="toggleGlossary">Glossary</button>
           <button class="${audioEnabled ? "" : "muted-button"}" data-action="toggleAudio">${audioEnabled ? "Sound On" : "Sound Off"}</button>
           <button data-action="copyRoom">Copy Code</button>
-          <button data-action="surrender">Concede</button>
+          ${finished ? `<button data-action="backToMenu">Main Menu</button>` : `<button data-action="surrender">Concede</button>`}
         </div>
       </header>
-      <main class="board">
-        ${renderPlayerZone(opponent, "opponent")}
-        ${renderCombatBar()}
-        ${renderPlayerZone(me, "me")}
+      <main class="board ${finished ? "finished-board" : ""}">
+        ${finished ? renderMatchSummary() : `
+          ${renderPlayerZone(opponent, "opponent")}
+          ${renderCombatBar()}
+          ${renderPlayerZone(me, "me")}
+        `}
       </main>
       ${renderTutorialModal()}
       ${renderGlossaryPopover()}
     </div>
+  `;
+}
+
+function renderMatchSummary() {
+  const result = state.winnerIndex === null
+    ? "Draw"
+    : `${state.players[state.winnerIndex].name} wins`;
+  return `
+    <section class="match-summary">
+      <header class="match-summary-header">
+        <div>
+          <h2>${escapeHtml(result)}</h2>
+          <p>${escapeHtml(getCombatDetail())}</p>
+        </div>
+        <button data-action="backToMenu">Main Menu</button>
+      </header>
+      <div class="match-stats-grid">
+        ${state.players.map((player) => renderPlayerMatchStats(player)).join("")}
+      </div>
+      <section class="match-log-panel">
+        <h3>Final Log</h3>
+        ${renderLog(10)}
+      </section>
+    </section>
+  `;
+}
+
+function renderPlayerMatchStats(player) {
+  const opponent = state.players.find((candidate) => candidate.index !== player.index);
+  const damageDealt = Math.max(0, STARTING_HQ - Math.max(0, opponent?.hq ?? STARTING_HQ));
+  const outcome = state.winnerIndex === null
+    ? "Draw"
+    : state.winnerIndex === player.index ? "Victory" : "Defeat";
+  return `
+    <article class="match-player-card">
+      <div>
+        <span class="match-outcome">${escapeHtml(outcome)}</span>
+        <h3>${escapeHtml(player.name)}</h3>
+        <p>${escapeHtml(player.faction.name)}</p>
+      </div>
+      <dl class="match-stat-list">
+        <div><dt>HQ Left</dt><dd>${Math.max(0, player.hq)}</dd></div>
+        <div><dt>HQ Damage</dt><dd>${damageDealt}</dd></div>
+        <div><dt>Units In Field</dt><dd>${player.battlefield.length}</dd></div>
+        <div><dt>Operations</dt><dd>${player.operations.length}</dd></div>
+        <div><dt>Hand</dt><dd>${player.handCount}</dd></div>
+        <div><dt>Deck</dt><dd>${player.deckCount}</dd></div>
+        <div><dt>Scrap</dt><dd>${player.discardCount}</dd></div>
+      </dl>
+    </article>
   `;
 }
 
@@ -539,15 +597,16 @@ function renderTutorialModal() {
 
 function renderHQ(player) {
   const targetable = isTargetable({ kind: "hq", ownerIndex: player.index });
+  const attackTarget = isAttackableHQ(player.index);
   return `
-    <div class="hq ${targetable ? "targetable" : ""}" data-hq-owner="${player.index}">
+    <div class="hq ${targetable ? "targetable" : ""} ${attackTarget ? "attack-target" : ""}" data-hq-owner="${player.index}" title="${attackTarget ? "Click to attack HQ with selected attackers" : ""}">
       <strong>${Math.max(0, player.hq)}</strong> HQ
     </div>
   `;
 }
 
-function renderLog() {
-  const entries = state.log.slice(-5).reverse();
+function renderLog(limit = 5) {
+  const entries = state.log.slice(-limit).reverse();
   return `
     <ul class="log-list">
       ${entries.map((entry) => `<li>${escapeHtml(entry.message)}</li>`).join("")}
@@ -556,6 +615,13 @@ function renderLog() {
 }
 
 function handleAction(action) {
+  if (action === "backToMenu") {
+    state = null;
+    pendingCard = null;
+    selectedBlockerId = null;
+    render();
+    return;
+  }
   if (action === "openTutorial") {
     tutorialOpen = true;
     tutorialPage = 0;
@@ -685,6 +751,21 @@ function handleUnitClick(unitId, ownerIndex) {
   }
 }
 
+function handleHQCombatClick(ownerIndex) {
+  if (pendingCard || !state || state.status !== "playing") {
+    return false;
+  }
+  if (!isAttackableHQ(ownerIndex)) {
+    return false;
+  }
+  if (!hasDeclaredAttackers()) {
+    showNotice("Select one or more ready units, then click the enemy HQ.");
+    return true;
+  }
+  socket.emit("nextPhase");
+  return true;
+}
+
 function handleTargetClick(target) {
   if (!pendingCard) {
     return;
@@ -743,7 +824,7 @@ function getNextPhaseLabel() {
     return "To Combat";
   }
   if (state.phase === "declareAttackers") {
-    return "Commit Attack";
+    return hasDeclaredAttackers() ? "Attack HQ" : "Skip Attack";
   }
   if (state.phase === "declareBlockers") {
     return "Resolve Combat";
@@ -803,7 +884,9 @@ function getCombatDetail() {
     return pendingCard.target;
   }
   if (state.phase === "declareAttackers") {
-    return "Ready units can attack unless they are Garrison or recently deployed without Blitz.";
+    return state.viewerIndex === state.activePlayer
+      ? "Click ready units to assign them to the enemy HQ. The defender may block before damage lands."
+      : "The enemy is choosing units to send at your HQ.";
   }
   if (state.phase === "declareBlockers") {
     return "Choose one ready blocker, then click an attacking unit.";
@@ -817,6 +900,20 @@ function isAttacking(unitId) {
 
 function isBlocking(unitId) {
   return Boolean(state?.combat?.attackers?.some((attack) => attack.blockerId === unitId));
+}
+
+function hasDeclaredAttackers() {
+  return Boolean(state?.combat?.attackers?.length);
+}
+
+function isAttackableHQ(ownerIndex) {
+  return Boolean(
+    !pendingCard &&
+    state?.status === "playing" &&
+    state.phase === "declareAttackers" &&
+    state.viewerIndex === state.activePlayer &&
+    ownerIndex === getOpponentIndex(state.viewerIndex)
+  );
 }
 
 function getMe() {

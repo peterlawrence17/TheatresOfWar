@@ -1,27 +1,56 @@
-<svg xmlns="http://www.w3.org/2000/svg" width="480" height="320" viewBox="0 0 480 320" role="img" aria-label="Decima MAS Raiders placeholder art">
+<svg xmlns="http://www.w3.org/2000/svg" width="480" height="320" viewBox="0 0 480 320" role="img" aria-label="Decima MAS Raiders card art">
   <defs>
     <linearGradient id="bg" x1="0" x2="1" y1="0" y2="1">
-      <stop offset="0" stop-color="#26312d"/>
-      <stop offset="0.52" stop-color="#6b694b"/>
-      <stop offset="1" stop-color="#111817"/>
+      <stop offset="0" stop-color="#1f4c37"/>
+      <stop offset="0.52" stop-color="#547553"/>
+      <stop offset="1" stop-color="#101a14"/>
     </linearGradient>
-    <radialGradient id="lamp" cx="30%" cy="16%" r="70%">
-      <stop offset="0" stop-color="#ead48a" stop-opacity="0.62"/>
-      <stop offset="0.5" stop-color="#ead48a" stop-opacity="0.13"/>
-      <stop offset="1" stop-color="#ead48a" stop-opacity="0"/>
+    <radialGradient id="lamp" cx="50%" cy="22%" r="78%">
+      <stop offset="0" stop-color="#d8c98c" stop-opacity="0.68"/>
+      <stop offset="0.46" stop-color="#d8c98c" stop-opacity="0.16"/>
+      <stop offset="1" stop-color="#d8c98c" stop-opacity="0"/>
     </radialGradient>
+    <linearGradient id="ground" x1="0" x2="1" y1="0" y2="0">
+      <stop offset="0" stop-color="#070a0a" stop-opacity="0.82"/>
+      <stop offset="0.5" stop-color="#101a14" stop-opacity="0.58"/>
+      <stop offset="1" stop-color="#070a0a" stop-opacity="0.88"/>
+    </linearGradient>
+    <filter id="grain">
+      <feTurbulence baseFrequency="0.72" numOctaves="2" seed="57" type="fractalNoise"/>
+      <feColorMatrix type="saturate" values="0"/>
+      <feComponentTransfer>
+        <feFuncA type="table" tableValues="0 0.18"/>
+      </feComponentTransfer>
+      <feBlend mode="overlay" in2="SourceGraphic"/>
+    </filter>
+    <clipPath id="round">
+      <rect width="480" height="320" rx="18"/>
+    </clipPath>
   </defs>
-  <rect width="480" height="320" rx="18" fill="url(#bg)"/>
-  <rect width="480" height="320" rx="18" fill="url(#lamp)"/>
-  <path d="M42 210 C116 146 168 248 238 188 S358 170 430 116" fill="none" stroke="#f0ddb0" stroke-width="7" stroke-opacity="0.26"/>
-  <path d="M58 74 H422 M82 110 H398 M96 146 H382 M72 182 H408 M116 218 H364" stroke="#f8e8bd" stroke-width="2" stroke-opacity="0.18"/>
-  <path d="M106 246 L138 220 L170 250 L212 214 L270 244 L330 202 L386 238" fill="none" stroke="#101617" stroke-width="10" stroke-opacity="0.42"/>
-  <circle cx="124" cy="108" r="27" fill="none" stroke="#e3c87e" stroke-width="5" stroke-opacity="0.55"/>
-  <path d="M124 74 V142 M90 108 H158 M106 90 L142 126 M142 90 L106 126" stroke="#e3c87e" stroke-width="4" stroke-opacity="0.55"/>
-  <rect x="256" y="78" width="142" height="72" rx="8" fill="#0b1112" fill-opacity="0.34" stroke="#ead48a" stroke-opacity="0.24"/>
-  <path d="M278 126 H374 M278 104 H350" stroke="#ead48a" stroke-width="5" stroke-linecap="round" stroke-opacity="0.4"/>
-  <text x="240" y="284" text-anchor="middle" font-family="Arial, sans-serif" font-size="22" font-weight="700" fill="#f3e3b4" opacity="0.92">Decima MAS Raiders</text>
-  <text x="34" y="42" font-family="Arial, sans-serif" font-size="20" font-weight="700" fill="#f3e3b4" opacity="0.92">UNIT</text>
-  <text x="446" y="42" text-anchor="end" font-family="Arial, sans-serif" font-size="20" font-weight="700" fill="#f3e3b4" opacity="0.92">2/2</text>
-  <text x="240" y="64" text-anchor="middle" font-family="Arial, sans-serif" font-size="16" font-weight="700" fill="#d7c28a" opacity="0.82">Infantry / Naval</text>
+  <g clip-path="url(#round)">
+    <rect width="480" height="320" fill="url(#bg)"/>
+    <rect width="480" height="320" fill="url(#lamp)"/>
+    <path d="M0 218 C80 174 132 200 224 208 S370 180 480 152 V320 H0 Z" fill="#0a100d" opacity="0.34"/>
+    <path d="M0 238 C102 205 146 246 232 218 S380 194 480 172 V320 H0 Z" fill="url(#ground)"/>
+    <path d="M42 230 L82 198 L122 238 L178 190 L244 226 L316 176 L418 230" fill="none" stroke="#0a100d" stroke-width="15" stroke-linejoin="round" stroke-opacity="0.42"/>
+  <path d="M42 226 L82 194 L122 234 L178 186 L244 222 L316 172 L418 226" fill="none" stroke="#d8c98c" stroke-width="4" stroke-linejoin="round" stroke-opacity="0.14"/>
+    <path d="M52 78 H426 M86 112 H396 M72 146 H412 M104 180 H370 M128 214 H350" stroke="#d8c98c" stroke-width="2" stroke-opacity="0.12"/>
+    <g fill="#0a100d" stroke="#d8c98c" stroke-opacity="0.28" stroke-width="5" stroke-linejoin="round">
+    <path d="M72 268 H372 L420 236 L392 294 H112 Z" opacity="0.84"/>
+    <path d="M164 228 H260 L286 264 H140 Z" opacity="0.7"/>
+    <path d="M242 236 L380 212 M214 232 L88 214" fill="none" stroke-width="8" stroke-linecap="round"/>
+    <path d="M120 306 C190 282 258 324 340 294" fill="none" stroke-width="7" stroke-opacity="0.22"/>
+  </g>
+    <circle cx="378" cy="182" r="2" fill="#d8c98c" opacity="0.1"/>
+    <circle cx="358" cy="210" r="3" fill="#d8c98c" opacity="0.14"/>
+    <circle cx="338" cy="62" r="4" fill="#d8c98c" opacity="0.18"/>
+    <circle cx="318" cy="90" r="5" fill="#d8c98c" opacity="0.22"/>
+    <circle cx="298" cy="118" r="2" fill="#d8c98c" opacity="0.1"/>
+    <circle cx="278" cy="146" r="3" fill="#d8c98c" opacity="0.14"/>
+    <circle cx="258" cy="174" r="4" fill="#d8c98c" opacity="0.18"/>
+    <circle cx="238" cy="202" r="5" fill="#d8c98c" opacity="0.22"/>
+    <circle cx="218" cy="54" r="2" fill="#d8c98c" opacity="0.1"/>
+    <rect width="480" height="320" fill="#000" opacity="0.08" filter="url(#grain)"/>
+    <path d="M22 292 C106 252 162 290 236 252 S368 240 458 206" fill="none" stroke="#d8c98c" stroke-width="7" stroke-linecap="round" stroke-opacity="0.12"/>
+  </g>
 </svg>

@@ -1,27 +1,57 @@
-<svg xmlns="http://www.w3.org/2000/svg" width="480" height="320" viewBox="0 0 480 320" role="img" aria-label="Matilda II Infantry Tank placeholder art">
+<svg xmlns="http://www.w3.org/2000/svg" width="480" height="320" viewBox="0 0 480 320" role="img" aria-label="Matilda II Infantry Tank card art">
   <defs>
     <linearGradient id="bg" x1="0" x2="1" y1="0" y2="1">
-      <stop offset="0" stop-color="#26312d"/>
-      <stop offset="0.52" stop-color="#6b694b"/>
-      <stop offset="1" stop-color="#111817"/>
+      <stop offset="0" stop-color="#18314c"/>
+      <stop offset="0.52" stop-color="#38617e"/>
+      <stop offset="1" stop-color="#0e1822"/>
     </linearGradient>
-    <radialGradient id="lamp" cx="30%" cy="16%" r="70%">
-      <stop offset="0" stop-color="#ead48a" stop-opacity="0.62"/>
-      <stop offset="0.5" stop-color="#ead48a" stop-opacity="0.13"/>
-      <stop offset="1" stop-color="#ead48a" stop-opacity="0"/>
+    <radialGradient id="lamp" cx="51%" cy="19%" r="78%">
+      <stop offset="0" stop-color="#b7c6d8" stop-opacity="0.68"/>
+      <stop offset="0.46" stop-color="#b7c6d8" stop-opacity="0.16"/>
+      <stop offset="1" stop-color="#b7c6d8" stop-opacity="0"/>
     </radialGradient>
+    <linearGradient id="ground" x1="0" x2="1" y1="0" y2="0">
+      <stop offset="0" stop-color="#070a0a" stop-opacity="0.82"/>
+      <stop offset="0.5" stop-color="#0e1822" stop-opacity="0.58"/>
+      <stop offset="1" stop-color="#070a0a" stop-opacity="0.88"/>
+    </linearGradient>
+    <filter id="grain">
+      <feTurbulence baseFrequency="0.72" numOctaves="2" seed="61" type="fractalNoise"/>
+      <feColorMatrix type="saturate" values="0"/>
+      <feComponentTransfer>
+        <feFuncA type="table" tableValues="0 0.18"/>
+      </feComponentTransfer>
+      <feBlend mode="overlay" in2="SourceGraphic"/>
+    </filter>
+    <clipPath id="round">
+      <rect width="480" height="320" rx="18"/>
+    </clipPath>
   </defs>
-  <rect width="480" height="320" rx="18" fill="url(#bg)"/>
-  <rect width="480" height="320" rx="18" fill="url(#lamp)"/>
-  <path d="M42 210 C116 146 168 248 238 188 S358 170 430 116" fill="none" stroke="#f0ddb0" stroke-width="7" stroke-opacity="0.26"/>
-  <path d="M58 74 H422 M82 110 H398 M96 146 H382 M72 182 H408 M116 218 H364" stroke="#f8e8bd" stroke-width="2" stroke-opacity="0.18"/>
-  <path d="M106 246 L138 220 L170 250 L212 214 L270 244 L330 202 L386 238" fill="none" stroke="#101617" stroke-width="10" stroke-opacity="0.42"/>
-  <circle cx="124" cy="108" r="27" fill="none" stroke="#e3c87e" stroke-width="5" stroke-opacity="0.55"/>
-  <path d="M124 74 V142 M90 108 H158 M106 90 L142 126 M142 90 L106 126" stroke="#e3c87e" stroke-width="4" stroke-opacity="0.55"/>
-  <rect x="256" y="78" width="142" height="72" rx="8" fill="#0b1112" fill-opacity="0.34" stroke="#ead48a" stroke-opacity="0.24"/>
-  <path d="M278 126 H374 M278 104 H350" stroke="#ead48a" stroke-width="5" stroke-linecap="round" stroke-opacity="0.4"/>
-  <text x="240" y="284" text-anchor="middle" font-family="Arial, sans-serif" font-size="22" font-weight="700" fill="#f3e3b4" opacity="0.92">Matilda II Infantry Tank</text>
-  <text x="34" y="42" font-family="Arial, sans-serif" font-size="20" font-weight="700" fill="#f3e3b4" opacity="0.92">UNIT</text>
-  <text x="446" y="42" text-anchor="end" font-family="Arial, sans-serif" font-size="20" font-weight="700" fill="#f3e3b4" opacity="0.92">2/5</text>
-  <text x="240" y="64" text-anchor="middle" font-family="Arial, sans-serif" font-size="16" font-weight="700" fill="#d7c28a" opacity="0.82">Tank</text>
+  <g clip-path="url(#round)">
+    <rect width="480" height="320" fill="url(#bg)"/>
+    <rect width="480" height="320" fill="url(#lamp)"/>
+    <path d="M0 219 C80 181 132 199 224 201 S370 157 480 153 V320 H0 Z" fill="#091016" opacity="0.34"/>
+    <path d="M0 238 C102 205 146 246 232 218 S380 194 480 172 V320 H0 Z" fill="url(#ground)"/>
+    <path d="M42 230 L82 198 L122 238 L178 190 L244 226 L316 176 L418 230" fill="none" stroke="#091016" stroke-width="15" stroke-linejoin="round" stroke-opacity="0.42"/>
+  <path d="M42 226 L82 194 L122 234 L178 186 L244 222 L316 172 L418 226" fill="none" stroke="#b7c6d8" stroke-width="4" stroke-linejoin="round" stroke-opacity="0.14"/>
+    <path d="M52 78 H426 M86 112 H396 M72 146 H412 M104 180 H370 M128 214 H350" stroke="#b7c6d8" stroke-width="2" stroke-opacity="0.12"/>
+    <g fill="#091016" stroke="#b7c6d8" stroke-opacity="0.28" stroke-width="5" stroke-linejoin="round">
+    <path d="M104 239 H350 L386 269 H82 Z" opacity="0.86"/>
+    <path d="M156 217 H258 L292 241 H130 Z" opacity="0.78"/>
+    <path d="M250 225 L410 201" fill="none" stroke-width="9" stroke-linecap="round"/>
+    <circle cx="132" cy="269" r="18"/><circle cx="186" cy="269" r="18"/><circle cx="240" cy="269" r="18"/><circle cx="294" cy="269" r="18"/>
+    <path d="M78 281 H394" fill="none" stroke-width="12" stroke-linecap="round" opacity="0.55"/>
+  </g>
+    <circle cx="255" cy="183" r="3" fill="#b7c6d8" opacity="0.1"/>
+    <circle cx="62" cy="176" r="4" fill="#b7c6d8" opacity="0.14"/>
+    <circle cx="265" cy="169" r="5" fill="#b7c6d8" opacity="0.18"/>
+    <circle cx="72" cy="162" r="2" fill="#b7c6d8" opacity="0.22"/>
+    <circle cx="275" cy="155" r="3" fill="#b7c6d8" opacity="0.1"/>
+    <circle cx="82" cy="148" r="4" fill="#b7c6d8" opacity="0.14"/>
+    <circle cx="285" cy="141" r="5" fill="#b7c6d8" opacity="0.18"/>
+    <circle cx="92" cy="134" r="2" fill="#b7c6d8" opacity="0.22"/>
+    <circle cx="295" cy="127" r="3" fill="#b7c6d8" opacity="0.1"/>
+    <rect width="480" height="320" fill="#000" opacity="0.08" filter="url(#grain)"/>
+    <path d="M22 292 C106 252 162 290 236 252 S368 240 458 206" fill="none" stroke="#b7c6d8" stroke-width="7" stroke-linecap="round" stroke-opacity="0.12"/>
+  </g>
 </svg>

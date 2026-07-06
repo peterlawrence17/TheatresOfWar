@@ -131,7 +131,7 @@ io.on("connection", (socket) => {
 });
 
 httpServer.listen(PORT, () => {
-  console.log(`Frontline Arcana card game listening on http://localhost:${PORT}`);
+  console.log(`Theatres of War card game listening on http://localhost:${PORT}`);
 });
 
 function withCurrentGame(socket, handler) {
